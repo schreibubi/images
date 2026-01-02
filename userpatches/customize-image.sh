@@ -68,9 +68,6 @@ passwd -l root
 systemctl disable armbian-firstlogin.service || true
 rm -f /root/.not_logged_in_yet || true
 
-# Add missing gpio group, which is actually used by udev already to set the gpio permissions correctly
-groupadd --system gpio
-
 # Create admin user with initial password and require password change on first login
 if ! id -u admin >/dev/null 2>&1; then
 	useradd -s /bin/bash --create-home -G sudo,netdev admin 
@@ -288,7 +285,7 @@ Environment="EVCC_NETWORK_HOST=${EVCC_HOSTNAME}.local"
 EVCCCONF
 
 if [[ "$OPENWB" == "true" ]]; then
-	cat >>/etc/evcc.yaml.example <<-YAML
+	cat >/etc/evcc.yaml.example <<-YAML
 	network:
 	  schema: https
 	  host: ${EVCC_HOSTNAME}.local
@@ -344,7 +341,7 @@ if [[ "$OPENWB" == "true" ]]; then
 	YAML
 
 	# Add necessary groups to allow user evcc to access OpenWB HW
-	usermod -aG dialout,input,gpio evcc
+	usermod -aG dialout,input evcc
 fi
 
 # Enable evcc service
